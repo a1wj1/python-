@@ -1,0 +1,35 @@
+import matplotlib
+from scipy import *
+import numpy as np
+import matplotlib.pyplot as plt
+from sympy import *
+ax1 = plt.axes(projection='3d')
+def dif(left,right,step):
+    t_value = [] #save t
+    P_value = [] #save P
+    value = []  # save x f(x)_dot value
+    t,P = symbols('t P')#引入x y变量
+    UU=200-27*P+20*(-0.0036*pow(t,2)+0.086*t+0.4657)
+    Us =integrate(UU, (t, t - 6.5, t))
+    U=(P-1.8)*Us-0.3575*t-18
+
+    # UU=200-27*P+20*(-0.0244*pow(t,2)+0.2069*t+0.5132)
+    # U =integrate(UU, (t, t - 6.5, t))
+    # U=(P-1.8)*U-18
+    print(U)
+    size=np.arange(left,right,step).size
+    value=np.zeros((size,size))
+    for i in range(size):
+        t_value.append(i)
+        P_value.append(i)  # 将i值代入积分表达式
+        for j in range(size):
+            value[i,j]=( U.subs('t',i ).subs('P',i ))
+
+    t_values,P_values=np.meshgrid(t_value, P_value)
+
+    # ax1.plot3D(t_value,P_value,value,'red')#三维曲线
+    ax1.plot_surface(t_values,P_values,np.array(value),cmap='rainbow')#三维曲面
+    plt.show()  # 显示图像
+
+if __name__ == '__main__':
+     dif(0,15,0.1)
